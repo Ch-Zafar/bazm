@@ -1,10 +1,13 @@
 import React from 'react'
+import Nav from './components/Nav'
 
 const App = () => {
   return (  
     <div
-    className='w-full bg-black text-white'
-    >App</div>
+    className='w-full  text-white flex justify-center'
+    >
+      <Nav/>
+    </div>
   )
 }
 
