@@ -7,7 +7,7 @@ import Greenbutton from './Green-button'
 const Nav = () => {
   return (
     <div
-      className='w-11/12 h-[50px] bg-white/20 backdrop-blur-md flex fixed top-5  '
+      className='w-11/12 h-[50px] bg-white/5 backdrop-blur-lg flex fixed top-5 border-1 border-white rounded-xl  '
     >
       <div
         className="w-1/3  ">
