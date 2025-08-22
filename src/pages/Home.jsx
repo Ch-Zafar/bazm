@@ -1,64 +1,107 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useRef, useState } from 'react'
 import Nav from '../components/Nav'
-import HeroImg from "/public/WhatsApp Image 2025-08-06 at 07.33.26_abdd3581.jpg"
 import ActionButton from '../components/ActionButton'
 
+import Productcard from '../components/Productcard';
 
-export const Context=createContext()
+export const Context = createContext();
 
 const Home = () => {
-  const [isActive, setIsactive] = useState(false)
-  console.log(isActive)
+  const videoRef = useRef();
+  const [isActive, setIsactive] = useState(false);
+
+  useEffect(() => {
+  if (isActive && videoRef.current) {
   
 
+    // try to play the video
+    videoRef.current.play().catch(() => {
+      console.log("Video Blocked");
+    });
+  } else {
+    // when overlay is visible → stop background scroll
+    document.body.style.overflow = "hidden";
+  }
+
+  // cleanup on unmount just in case
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [isActive]);
+
+
   return (
-    <div className=' w-full h-screen   flex justify-center'>
-      <Nav />
-      {/* hero section /////////// */}
+    <Context.Provider value={[isActive, setIsactive]}>
+      <div className='w-full h-auto flex justify-center items-center relative flex-col'>
+        <Nav />
 
-      <div className=' w-full h-screen  bg-cover flex  '  >
-        <div className="w-1/3 h-full">
-          <img src="/WhatsApp Image 2025-08-13 at 07.06.13_92a4c78f.jpg" alt="" className='w-full h-full' />
-        </div>
-        <div className="w-1/3 h-full">
-          <video
-            className='w-full h-full block object-cover'
-            src='/WhatsApp Video 2025-08-13 at 10.19.00_dc3d8428.mp4'
-            autoPlay={isActive === true}
-            loop
-            muted
-            playsInline
 
-          />
+        <div className='w-full h-screen bg-cover flex overflow-hidden'>
+
+
+          {/* Left Image */}
+          <div className="w-1/3 h-full flex relative">
+            <img
+              src="/WhatsApp Image 2025-08-13 at 07.06.13_92a4c78f.jpg"
+              alt=""
+              className='absolute inset-0 w-full h-full object-cover blur-lg scale-110'
+            />
+            <img
+              src="/WhatsApp Image 2025-08-13 at 07.06.13_92a4c78f.jpg"
+              alt=""
+              className='relative w-full h-full object-contain'
+            />
+          </div>
+
+          {/* Center Video */}
+          <div className="w-1/3 h-full relative">
+            <video
+              ref={videoRef}
+              className='w-full h-full '
+              src='/WhatsApp Video 2025-08-13 at 10.19.00_dc3d8428.mp4'
+              loop
+              muted
+              playsInline
+              autoPlay={isActive}
+            />
+          </div>
+
+          {/* Right Image */}
+          <div className="w-1/3 h-full flex relative">
+            <img
+              src="/WhatsApp Image 2025-08-13 at 07.06.13_af497365.jpg"
+              alt=""
+              className='absolute inset-0 w-full h-full object-cover blur-lg scale-110'
+            />
+            <img
+              src="/WhatsApp Image 2025-08-13 at 07.06.13_af497365.jpg"
+              alt=""
+              className='relative w-full h-full object-contain'
+            />
+          </div>
         </div>
-        <div className="w-1/3 h-full">
-          <img src="/WhatsApp Image 2025-08-13 at 07.06.13_af497365.jpg" alt="" className='w-full h-full' />
-        </div>
-        {/* //////////for transparent white overlay/////////// */}
-        {
-          isActive===true?
-          (<div className="absolute inset-0 bg-white/80 flex flex-col justify-center items-center">
+
+
+
+        {/* //////////////product_section////////////////// */}
+
+          <div className='w-full h-screen bg-white'>
+              <Productcard/>
+          </div>
+
+
+
+        {/* Transparent Overlay */}
+        {!isActive && (
+          <div className=" w-full h-screen fixed z-10  inset-0 bg-white/80 flex flex-col justify-center items-center transition-all overflow-hidden">
             <img src="/logo.png" alt="" className='w-[500px] h-[500px]' />
-            <Context.Provider value={[isActive,setIsactive]}>
-              <ActionButton  />
-
-
-            </Context.Provider>
-
-
-
-
-          </div>)
-          :null
-        }
+            <ActionButton />
+          </div>
+        )}
 
       </div>
-
-
-
-
-    </div>
-  )
+    </Context.Provider>
+  );
 }
 
-export default Home
+export default Home;
