@@ -1,7 +1,6 @@
   import React, { useContext, useEffect } from 'react'
   import { useDispatch, useSelector } from 'react-redux'
   import { addToCart } from '../features/cartSlice'
-  import { toggle } from '../features/productSlice';
 
 
 
@@ -9,18 +8,23 @@
   const Productcard = () => {
     
     const dispatch = useDispatch();
-    ///////////////arr for product details///////////
     const items = useSelector((state) => state.cart.items);
-    //////////////toggle button for dialog box/////////////////
-    const isOpen = useSelector((state)=> state.product.isOpen);
+
+
+    
+
+
+
+
+
+
 
     const handleAddToCart = () => {
       dispatch(addToCart({ id: 1, name: "Oversized Tshirt" }));
 
     };
     const handleseeItems=()=>{
-      dispatch(toggle());
-      // console.log(isOpen)
+
     }
 
     // useEffect(()=>{

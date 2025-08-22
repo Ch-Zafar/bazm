@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from 'react'
 import Nav from '../components/Nav'
 import ActionButton from '../components/ActionButton'
+
 import Productcard from '../components/Productcard';
 
 export const Context = createContext();
@@ -28,12 +29,15 @@ const Home = () => {
   };
 }, [isActive]);
 
+
   return (
     <Context.Provider value={[isActive, setIsactive]}>
       <div className='w-full h-auto flex justify-center items-center relative flex-col'>
         <Nav />
 
+
         <div className='w-full h-screen bg-cover flex overflow-hidden'>
+
 
           {/* Left Image */}
           <div className="w-1/3 h-full flex relative">
@@ -78,6 +82,7 @@ const Home = () => {
         </div>
 
 
+
         {/* //////////////product_section////////////////// */}
 
           <div className='w-full h-screen bg-white'>
@@ -93,6 +98,7 @@ const Home = () => {
             <ActionButton />
           </div>
         )}
+
       </div>
     </Context.Provider>
   );
