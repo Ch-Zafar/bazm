@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Whitebutton from './White-button'
 import Greenbutton from './Green-button'
 
+
 const Nav = () => {
+
+
   return (
     <div
       className='w-11/12 h-[50px] bg-white/5 backdrop-blur-lg flex fixed top-5 border-1 border-white rounded-xl z-10 '
@@ -25,10 +28,15 @@ const Nav = () => {
       </div>
       <div className="w-1/3 flex justify-end items-center">
         <Whitebutton/>
+
+
         <Greenbutton/>
 
       </div>
+      
     </div>
+    
+
   )
 }
 
