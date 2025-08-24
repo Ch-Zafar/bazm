@@ -1,33 +1,49 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect, useMemo, useRef } from "react";
 import { MeshStandardMaterial } from "three";
- import { useGLTF, useTexture } from "@react-three/drei";
-
-
+import { useGLTF, useTexture, Decal } from "@react-three/drei";
 
 const Model = (props) => {
-    const shirtColor=localStorage.getItem("color")
-    const { scene } = useGLTF("/shirt_baked.glb");
-      const decalTexture = useTexture("/WhatsApp Image 2025-08-20 at 21.07.20_15601044.jpg")
-    
-    
-    useEffect(()=>{
-      scene.traverse((child) => {
-    if (child.isMesh) {
-      child.material = new MeshStandardMaterial({ color: shirtColor,etalness: 0.5,
-  roughness: 0.5 });
-    }
-  });
-    },[shirtColor])
+  const shirtColor = localStorage.getItem("color") || "white";
+  const { nodes, materials } = useGLTF("/shirt_baked.glb");
+  const meshRef = useRef();
+
+  // Load decal texture (logo or image)
+  const decalTexture = useTexture("/bg-2.jpg");
+  
+  const shirtMaterial = useMemo(
+    () =>
+      new MeshStandardMaterial({
+        color: shirtColor,
+        metalness: 0.5,
+        roughness: 0.5,
+      }),
+    [shirtColor]
+  );
 
   return (
-    <>
-      <primitive object={scene} {...props} />
+    <group {...props} dispose={null}>
+      {/* Render shirt mesh */}
+      <mesh
+        ref={meshRef}
+        geometry={nodes.T_Shirt_male.geometry}
+        material={shirtMaterial}
+        castShadow
+        receiveShadow
+      />
       
-    
-    
-    </>
+      {/* Back side logo decal - separate from mesh but referencing it */}
+      <Decal
+  mesh={meshRef}              // Target mesh reference
+  position={[0, 0.1, -0.15]}  // 3D position
+  rotation={[0, Math.PI, 0]}  // 3D rotation
+  scale={0.2}                 // Size (number or [x,y,z])
+  map={decalTexture}          // Texture to apply
+  transparent={true}          // Enable transparency
+  polygonOffset={true}        // Z-fighting prevention
+  polygonOffsetFactor={-1}    // Offset amount
+/>
+    </group>
+  );
+};
 
-  )
-}
-
-export default Model
+export default Model;

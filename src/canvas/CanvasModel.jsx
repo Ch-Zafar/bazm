@@ -1,69 +1,69 @@
-import React, { createContext, useState } from "react"
+import React, { createContext, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Center, Environment, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import Model from "./Model";
-import { Decal } from '@react-three/drei';
-import { useTexture } from "@react-three/drei";
-
 
 export const colorContext = createContext();
+
 const CanvasModel = () => {
+  const [color, setColor] = useState("white");
+  const [decal, setDecal] = useState("");
 
+  const handleFile = (e) => {
+    
+    const file = e.target.files[0]; // ✅ fixed
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setDecal(url);
+      localStorage.setItem("decal",url)
+    }
+  };
 
-  const [color, setColor] = useState('white');
+  useEffect(() => {
+    return () => {
+      if (decal) URL.revokeObjectURL(decal); // ✅ cleanup on unmount/replace
+    };
+  }, [decal]);
+
   const handleColor = (color) => {
-    setColor(color)
-    localStorage.setItem("color", color)
-  }
+    setColor(color);
+    localStorage.setItem("color", color);
+  };
+
   return (
-    <>
+    <colorContext.Provider value={[color, setColor ,decal,setDecal]}>
+      <Canvas shadows camera={{ position: [0, 2, 10], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight castShadow position={[1, 1, 5]} intensity={1.5} />
+        <directionalLight castShadow position={[1, 1, -5]} intensity={1.5} />
+        <pointLight position={[1, 2, 1]} intensity={1} />
 
-      <colorContext.Provider value={[color, setColor]}>
-        <Canvas>
-          <ambientLight intensity={0.5} />
-          {/* /////////////////for front ///////////////// */}
-          <directionalLight position={[5, 5, 5]} intensity={5} target-position={[0, 0, 0]} />
-          {/* ////////////////for back ///////////////////// */}
-          {/* <directionalLight position={[5,5,-10]} intensity={5} target-position={[0,0,0]}/> */}
-          <pointLight position={[0, 0, 5]} />
-          <mesh>
-            <Model scale={10} />
-            
-          </mesh>
-          <OrbitControls
-            enableZoom={true}   // allow zoom
-            enablePan={true}    // allow panning
-            enableRotate={true}
-          />
+        <mesh>
+          <Model scale={10} />
+        </mesh>
 
-        </Canvas>
-        {/* <input type="color" name="color" id="" onChange={handleColor} /> */}
-        <div
-          className="w-30 h-auto flex justify-between items-center"
-        >
-          <button
-            className="w-10 h-10 rounded-full bg-black border-0 border-black cursor-pointer hover:border-1 active:border-1" onClick={() => handleColor('black')}
-          >
+        <OrbitControls
+          enableZoom
+          enablePan
+          enableRotate
+          enableDamping
+          dampingFactor={0.1}
+        />
+      </Canvas>
 
-          </button>
-          <button
-            className="w-10 h-10 rounded-full bg-[#f5f5dc] border-0 border-black cursor-pointer hover:border-1 active:border-1" onClick={() => handleColor("#f5f5dc")}
-          >
+      <div className="w-30 h-auto flex justify-between items-center mt-4">
+        <button
+          className="w-10 h-10 rounded-full bg-black border cursor-pointer"
+          onClick={() => handleColor("black")}
+        />
+        <button
+          className="w-10 h-10 rounded-full bg-[#f5f5dc] border cursor-pointer"
+          onClick={() => handleColor("#f5f5dc")}
+        />
+        <input type="file" accept="image/*" onChange={handleFile} />
+      </div>
+    </colorContext.Provider>
+  );
+};
 
-          </button>
-        </div>
-
-
-
-
-
-
-
-      </colorContext.Provider>
-
-
-    </>
-  )
-}
-
-export default CanvasModel
+export default CanvasModel;
