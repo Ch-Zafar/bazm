@@ -3,6 +3,7 @@ import Nav from '../components/Nav'
 import ActionButton from '../components/ActionButton'
 
 import Productcard from '../components/Productcard';
+import ProductSection from '../components/ProductSection';
 
 export const Context = createContext();
 
@@ -86,7 +87,7 @@ const Home = () => {
         {/* //////////////product_section////////////////// */}
 
           <div className='w-full h-screen bg-white'>
-              <Productcard/>
+              <ProductSection/>
           </div>
 
 
