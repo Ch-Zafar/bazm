@@ -8,7 +8,7 @@ const ProductSection = () => {
 
 
   return (
-    <div className='w-full h-screen py-20 px-20'>
+    <div className='w-full h-screen  py-20 px-20 bg-black'>
         {/* <Productcard/>
         <ProductDetail/> */}
         <CanvasModel/>

@@ -1,97 +1,58 @@
-import React, { useContext, useEffect } from 'react'
-import { MeshStandardMaterial, PositionalAudio } from 'three';
- import {Decal, useGLTF, useTexture } from "@react-three/drei";
 
-
+import React, { useEffect, useMemo, useRef } from "react";
+import { MeshStandardMaterial } from "three";
+import { useGLTF, useTexture, Decal } from "@react-three/drei";
 
 const Model = (props) => {
-    const {nodes,materials}=useGLTF("/shirt_baked.glb");
-    console.log(nodes)
+  const shirtColor = localStorage.getItem("color") || "white";
+  const { nodes, materials } = useGLTF("/shirt_baked.glb");
 
-    const shirtTexture=useTexture("/WhatsApp Image 2025-08-20 at 21.07.20_15601044.jpg");
+  const meshRef = useRef();
 
+  // Load decal texture (logo or image)
+  const logo = localStorage.getItem("decal")
+  const decalTexture = useTexture(logo?`${logo}`:"bg.jpg");
+  useEffect(() => {
+    if (materials.lambert1) {
+      materials.lambert1.color.set(shirtColor);
+      materials.lambert1.needsUpdate = true;
+    }
+  }, [shirtColor, materials]);
+  const shirtMaterial = useMemo(
+    () =>
+      new MeshStandardMaterial({
+        color: shirtColor,
+        metalness: 0.5,
+        roughness: 0.5,
+      }),
+    [shirtColor]
+  );
 
+  return (
+    <group {...props} dispose={null}>
+      {/* Render shirt mesh */}
+      <mesh
+        ref={meshRef}
+        geometry={nodes.T_Shirt_male.geometry}
+        material={materials.lambert1}
+        castShadow
+        receiveShadow
+      />
 
-    return(
-      <>
-        <mesh
-          geometry={nodes.T_Shirt_male.geometry}
-          material={materials.lambert1}
-          castShadow
-          receiveShadow
-        
-        
-        />
-        <meshStandardMaterial color="white" />
-
-        <Decal
-          position={[0,0.1,0.15]}
-          rotation={[0,0,0]}
-          scale={0.2}
-          map={shirtTexture}
-          depthTest={true}
-          depthWrite={false}
-        
-        
-        />
-      
-      
-      
-      </>
-    )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      {/* Back side logo decal - separate from mesh but referencing it */}
+      <Decal
+        mesh={meshRef}              // Target mesh reference
+        position={[0, 0.1, -0.15]}  // 3D position
+        rotation={[0, Math.PI, 0]}  // 3D rotation
+        scale={0.2}                 // Size (number or [x,y,z])
+        map={decalTexture}          // Texture to apply
+        transparent={true}          // Enable transparency
+        polygonOffset={true}        // Z-fighting prevention
+        polygonOffsetFactor={-1}    // Offset amount
+      />
+    </group>
+  );
+};
 
 
-
-
-
-
-
-
-
-
-
-
-
-  //   const shirtColor=localStorage.getItem("color")
-  //   const { scene } = useGLTF("/shirt_baked.glb");
-  //     const decalTexture = useTexture("/WhatsApp Image 2025-08-20 at 21.07.20_15601044.jpg")
-    
-    
-  //   useEffect(()=>{
-  //     scene.traverse((child) => {
-  //   if (child.isMesh) {
-  //     child.material = new MeshStandardMaterial({ color: shirtColor,etalness: 0.5,
-  // roughness: 0.5 });
-  //   }
-  // });
-  //   },[shirtColor])
-
-  // return (
-  //   <>
-  //     <primitive object={scene} {...props} />
-      
-    
-    
-  //   </>
-
-  // )
-}
-
-export default Model
+export default Model;
