@@ -2,15 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   items: [
-    {
-      id:1,
-      color:'white',
-      size:'S',
-      decal:'bg.png',
-      quantity:1,
-      imagePath:'/WhatsApp Image 2025-08-13 at 07.06.14_d82faffa.jpg',
-      price:"1700"
-    }
+    
   ],
   isOpen:false ,
   checkoutVisible:false
